@@ -16,21 +16,6 @@ from openai import AsyncOpenAI
 
 from core.models import LLMResponse, LLMUsage, Message, Role
 
-# base_url changes per model family on Metis
-METIS_BASE_URLS = {
-    "gemini": "https://api.metisai.ir/api/v1/wrapper/gemini",
-    "openai": "https://api.metisai.ir/api/v1/wrapper/openai",
-    "grok":   "https://api.metisai.ir/api/v1/wrapper/grok",
-}
-
-def _get_base_url(model: str) -> str:
-    """Pick the correct Metis base_url based on model name."""
-    if model.startswith("gemini"):
-        return METIS_BASE_URLS["gemini"]
-    if model.startswith("grok"):
-        return METIS_BASE_URLS["grok"]
-    return METIS_BASE_URLS["openai"]
-
 
 class MetisProvider:
     """LLMProvider implementation backed by Metis API.
@@ -45,6 +30,20 @@ class MetisProvider:
         api_key: str,
         model: str = "gemini-2.0-flash",
     ) -> None:
+
+        METIS_BASE_URLS = {
+            "gemini": "https://api.metisai.ir/api/v1/wrapper/gemini",
+            "openai": "https://api.metisai.ir/api/v1/wrapper/openai",
+            "grok":   "https://api.metisai.ir/api/v1/wrapper/grok",
+        }
+
+        def _get_base_url(model: str) -> str:
+            if model.startswith("gemini"):
+                return METIS_BASE_URLS["gemini"]
+            if model.startswith("grok"):
+                return METIS_BASE_URLS["grok"]
+            return METIS_BASE_URLS["openai"]
+        
         self.model = model
         self._client = AsyncOpenAI(
             api_key=api_key,

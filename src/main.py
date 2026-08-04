@@ -71,6 +71,7 @@ async def main() -> None:
         token=settings.telegram_bot_token,
         runtime=runtime,
         tenant_id=settings.default_tenant_id,
+        proxy_url=settings.proxy_url,
     )
 
     await gateway.start()

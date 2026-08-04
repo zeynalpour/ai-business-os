@@ -17,6 +17,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message as TelegramMessage
@@ -33,6 +34,9 @@ from core.models import (
 logger = logging.getLogger(__name__)
 
 
+
+
+
 class TelegramGateway:
     """Gateway implementation for Telegram.
 
@@ -46,11 +50,16 @@ class TelegramGateway:
         token: str,
         runtime: AgentRuntime,
         tenant_id: str = "default",
+        proxy_url: str | None = None,
     ) -> None:
         self._runtime = runtime
         self._tenant_id = tenant_id
+
+        session = AiohttpSession(proxy=proxy_url) if proxy_url else None
+
         self._bot = Bot(
             token=token,
+            session=session,
             default=DefaultBotProperties(parse_mode=ParseMode.HTML),
         )
         self._dp = Dispatcher()

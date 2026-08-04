@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     app_debug: bool = Field(False, description="Enable debug logging")
     default_tenant_id: str = Field("default", description="Tenant id")
 
+    # ── Proxy ─────────────────────────────────────────────
+    proxy_url: str | None = Field(None, description="Proxy URL for restricted networks")
+
 
 @lru_cache
 def get_settings() -> Settings:
