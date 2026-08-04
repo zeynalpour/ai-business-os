@@ -1,0 +1,12 @@
+# LLM
+AVALAI_API_KEY=your_avalai_api_key_here
+LLM_MODEL=gemini-2.0-flash
+LLM_USE_FLEX_TIER=true
+
+# Telegram
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+
+# App
+APP_ENV=development
+APP_DEBUG=false
+DEFAULT_TENANT_ID=default
