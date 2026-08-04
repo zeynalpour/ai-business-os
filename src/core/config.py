@@ -13,6 +13,7 @@ pydantic-settings automatically:
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -26,17 +27,21 @@ class Settings(BaseSettings):
     )
 
     # ── LLM ───────────────────────────────────────────────
-    avalai_api_key: str = Field(..., description="AvalAI API key")
+    llm_provider: Literal["avalai", "metis"] = Field(
+        "avalai", description="Which LLM provider to use"
+    )
+    avalai_api_key: str = Field("", description="AvalAI API key")
+    metis_api_key: str = Field("", description="Metis API key")
     llm_model: str = Field("gemini-2.0-flash", description="Model to use")
     llm_use_flex_tier: bool = Field(True, description="50% cheaper on AvalAI")
 
     # ── Telegram ──────────────────────────────────────────
-    telegram_bot_token: str = Field(..., description="Telegram bot token from @BotFather")
+    telegram_bot_token: str = Field(..., description="Telegram bot token")
 
     # ── App ───────────────────────────────────────────────
     app_env: str = Field("development", description="development | test | production")
     app_debug: bool = Field(False, description="Enable debug logging")
-    default_tenant_id: str = Field("default", description="Tenant id for single-tenant mode")
+    default_tenant_id: str = Field("default", description="Tenant id")
 
 
 @lru_cache
