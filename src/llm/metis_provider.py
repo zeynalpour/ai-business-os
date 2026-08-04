@@ -23,7 +23,6 @@ METIS_BASE_URLS = {
     "grok":   "https://api.metisai.ir/api/v1/wrapper/grok",
 }
 
-
 def _get_base_url(model: str) -> str:
     """Pick the correct Metis base_url based on model name."""
     if model.startswith("gemini"):
