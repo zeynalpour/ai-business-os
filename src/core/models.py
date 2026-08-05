@@ -9,15 +9,15 @@ be swapped without touching core business logic.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from enum import Enum
+from datetime import datetime, UTC
+from enum import StrEnum
 from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
 
-class ChannelType(str, Enum):
+class ChannelType(StrEnum):
     """Which gateway a message originated from / should be delivered to."""
 
     TELEGRAM = "telegram"
@@ -27,7 +27,7 @@ class ChannelType(str, Enum):
     REST = "rest"
 
 
-class Role(str, Enum):
+class Role(StrEnum):
     USER = "user"
     ASSISTANT = "assistant"
     SYSTEM = "system"
@@ -45,7 +45,7 @@ class Message(BaseModel):
     external_user_id: str = Field(
         ..., description="User id in the source channel, e.g. Telegram chat id"
     )
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
