@@ -44,6 +44,7 @@ def build_llm_provider(settings):
         return MetisProvider(
             api_key=settings.metis_api_key,
             model=settings.llm_model,
+            proxy_url=settings.proxy_url,
         )
     return AvalAIProvider(
         api_key=settings.avalai_api_key,
@@ -73,6 +74,7 @@ async def main() -> None:
         tenant_id=settings.default_tenant_id,
         proxy_url=settings.proxy_url,
     )
+
 
     await gateway.start()
 
