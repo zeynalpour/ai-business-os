@@ -1,0 +1,15 @@
+services:
+  bot:
+    build: .
+    image: ai-business-os:latest
+    container_name: ai-business-os
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
