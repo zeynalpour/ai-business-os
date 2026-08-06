@@ -47,26 +47,24 @@ class MetisProvider:
     ) -> None:
         self.model = model
         self._is_gemini = model.startswith("gemini")
+        self._gemini_client: genai.Client | None = None
+        self._openai_client: AsyncOpenAI | None = None
 
         if self._is_gemini:
-            # Force proxy for Google SDK via environment variable
             if proxy_url:
                 os.environ["HTTPS_PROXY"] = proxy_url
                 os.environ["HTTP_PROXY"] = proxy_url
-
             self._gemini_client = genai.Client(
                 api_key=api_key,
                 http_options=types.HttpOptions(
                     base_url=METIS_GEMINI_ENDPOINT,
                 ),
             )
-            self._openai_client = None
         else:
             self._openai_client = AsyncOpenAI(
                 api_key=api_key,
                 base_url=_get_base_url(model),
             )
-            self._gemini_client = None
 
     async def generate(
         self,
@@ -111,11 +109,12 @@ class MetisProvider:
         )
         latency_ms = (time.perf_counter() - start) * 1000
 
+        usage_metadata = response.usage_metadata
         return LLMResponse(
             content=response.text or "",
             usage=LLMUsage(
-                prompt_tokens=response.usage_metadata.prompt_token_count or 0,
-                completion_tokens=response.usage_metadata.candidates_token_count or 0,
+                prompt_tokens=usage_metadata.prompt_token_count if usage_metadata else 0,
+                completion_tokens=usage_metadata.candidates_token_count if usage_metadata else 0,
                 latency_ms=latency_ms,
             ),
             provider=self.name,
@@ -127,7 +126,9 @@ class MetisProvider:
         messages: list[Message],
         system_prompt: str | None = None,
     ) -> LLMResponse:
-        openai_messages = []
+        assert self._openai_client is not None
+        
+        openai_messages : list[dict[str, str]] = []
 
         if system_prompt:
             openai_messages.append({"role": "system", "content": system_prompt})
@@ -142,7 +143,7 @@ class MetisProvider:
         start = time.perf_counter()
         response = await self._openai_client.chat.completions.create(
             model=self.model,
-            messages=openai_messages,
+            messages=openai_messages, # type: ignore[arg-type]
         )
         latency_ms = (time.perf_counter() - start) * 1000
 

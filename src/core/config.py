@@ -55,4 +55,4 @@ def get_settings() -> Settings:
         from core.config import get_settings
         settings = get_settings()
     """
-    return Settings()
+    return Settings() # type: ignore[call-arg]

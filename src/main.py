@@ -14,10 +14,11 @@ import logging
 
 import structlog
 
-from core.config import get_settings
+from core.config import get_settings, Settings
 from gateways.telegram import TelegramGateway
 from llm.avalai_provider import AvalAIProvider
 from llm.metis_provider import MetisProvider
+from core.interfaces import LLMProvider
 from runtime.sales_runtime import SalesRuntime
 
 
@@ -38,7 +39,7 @@ def setup_logging(debug: bool = False) -> None:
     )
 
 
-def build_llm_provider(settings):
+def build_llm_provider(settings: Settings) -> LLMProvider:
     """Instantiate the correct LLM provider based on config."""
     if settings.llm_provider == "metis":
         return MetisProvider(

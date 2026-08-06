@@ -16,7 +16,7 @@ Using typing.Protocol instead of ABCs means:
 
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable, Any
 
 from core.models import IncomingEvent, LLMResponse, Message, OutgoingResponse
 
@@ -40,7 +40,7 @@ class Gateway(Protocol):
         """Deliver a response back to the user on this channel."""
         ...
 
-    async def parse_incoming(self, raw_payload: dict) -> IncomingEvent:
+    async def parse_incoming(self, raw_payload: dict[str, Any]) -> IncomingEvent:
         """Convert a channel-native payload into a normalized IncomingEvent."""
         ...
 
