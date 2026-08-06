@@ -14,11 +14,11 @@ import logging
 
 import structlog
 
-from core.config import get_settings, Settings
+from core.config import Settings, get_settings
+from core.interfaces import LLMProvider
 from gateways.telegram import TelegramGateway
 from llm.avalai_provider import AvalAIProvider
 from llm.metis_provider import MetisProvider
-from core.interfaces import LLMProvider
 from runtime.sales_runtime import SalesRuntime
 
 

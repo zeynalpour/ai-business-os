@@ -113,9 +113,15 @@ class MetisProvider:
         return LLMResponse(
             content=response.text or "",
             usage=LLMUsage(
-                prompt_tokens=usage_metadata.prompt_token_count if usage_metadata else 0,
-                completion_tokens=usage_metadata.candidates_token_count if usage_metadata else 0,
+                usage=LLMUsage(
+                prompt_tokens=(
+                    usage_metadata.prompt_token_count if usage_metadata else 0
+                ),
+                completion_tokens=(
+                    usage_metadata.candidates_token_count if usage_metadata else 0
+                ),
                 latency_ms=latency_ms,
+            ),
             ),
             provider=self.name,
             model=self.model,
