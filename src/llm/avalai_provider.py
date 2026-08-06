@@ -63,7 +63,7 @@ class AvalAIProvider:
         extra = {"service_tier": "flex"} if self._use_flex_tier else {}
 
         start = time.perf_counter()
-        response = await self._client.chat.completions.create(
+        response = await self._client.chat.completions.create( # type: ignore[call-overload]
             model=self.model,
             messages=openai_messages,
             **extra,

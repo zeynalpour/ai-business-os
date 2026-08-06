@@ -80,6 +80,7 @@ class MetisProvider:
         messages: list[Message],
         system_prompt: str | None = None,
     ) -> LLMResponse:
+        assert self._gemini_client is not None 
         contents = []
         for msg in messages:
             if msg.role == Role.USER:
