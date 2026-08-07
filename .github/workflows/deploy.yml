@@ -17,8 +17,6 @@ jobs:
           script: |
             cd ~/ai-business-os
             git pull origin main
-            
-            # Overwrite the server's .env file with your secure GitHub secret data
             echo "${{ secrets.ENV_FILE }}" > .env
-            
-            docker compose up -d --build
+            docker compose build --no-cache
+            docker compose up -d
