@@ -82,10 +82,14 @@ class VectorStore:
         """Search for relevant chunks and return their text."""
         name = _collection_name(tenant_id)
 
-        results = await self._client.search(
+        results = await self._client.query_points(
             collection_name=name,
-            query_vector=query_vector,
+            query=query_vector,
             limit=limit,
         )
 
-        return [hit.payload["text"] for hit in results if hit.payload]
+        return [
+            hit.payload["text"]
+            for hit in results.points
+            if hit.payload
+        ]

@@ -30,8 +30,7 @@ class Embedder:
         proxy_url: str | None = None,
     ) -> None:
         self._url = base_url
-        MODEL = {"name": model_family, "model": model_name}
-        self._model = MODEL
+        self._model = model_name
 
         import os
         if proxy_url:
@@ -44,11 +43,9 @@ class Embedder:
         )
 
     async def embed(self, chunks: list[Chunk]) -> list[list[float]]:
-        """Generate embeddings for a list of chunks.
-
-        Returns list of embedding vectors in the same order as input.
-        """
-        embeddings = []
+        """Generate embeddings for a list of chunks."""
+        logger.info("embedding chunks", count=len(chunks))
+        embeddings: list[list[float]] = []
 
         for chunk in chunks:
             logger.debug("embedding chunk", 
@@ -59,7 +56,9 @@ class Embedder:
                 model=self._model,
                 contents=chunk.text,
             )
-            embeddings.append(result.embeddings[0].values)
+            if result.embeddings is None:
+                raise ValueError(f"No embedding returned for chunk: {chunk.source}")
+            embeddings.append(list(result.embeddings[0].values or []))
 
         return embeddings
 
@@ -69,4 +68,6 @@ class Embedder:
             model=self._model,
             contents=query,
         )
-        return result.embeddings[0].values
+        if result.embeddings is None:
+            raise ValueError("No embedding returned for query")
+        return list(result.embeddings[0].values or [])
