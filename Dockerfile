@@ -26,7 +26,7 @@ WORKDIR /app
 
 # Copy virtual environment from builder
 COPY --from=builder /app/.venv /app/.venv
-COPY --from=builder /usr/local/lib/python3.11/site-packages/numpy /app/.venv/lib/python3.11/site-packages/numpy
+COPY --from=builder /usr/local/lib/python3.12/site-packages/numpy /app/.venv/lib/python3.12/site-packages/numpy
 
 # Copy source code and data
 COPY src/ ./src/
