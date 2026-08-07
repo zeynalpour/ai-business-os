@@ -2,7 +2,7 @@
 # Multi-stage build: keeps the final image small and clean
 
 # ── Stage 1: Builder ──────────────────────────────────
-FROM python:3.11-slim AS builder
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN pip install numpy==1.26.4 --no-binary numpy
 RUN uv sync --frozen --no-dev
 
 # ── Stage 2: Runtime ──────────────────────────────────
-FROM python:3.11-slim AS runtime
+FROM python:3.12-slim AS runtime
 
 WORKDIR /app
 
@@ -28,8 +28,9 @@ WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /usr/local/lib/python3.11/site-packages/numpy /app/.venv/lib/python3.11/site-packages/numpy
 
-# Copy source code
+# Copy source code and data
 COPY src/ ./src/
+COPY data/ ./data/
 
 # Make sure venv binaries are used
 ENV PATH="/app/.venv/bin:$PATH"
