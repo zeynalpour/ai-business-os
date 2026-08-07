@@ -43,20 +43,31 @@ class Embedder:
         return httpx.AsyncClient(timeout=30)
 
     async def embed(self, chunks: list[Chunk]) -> list[list[float]]:
+        """Generate embeddings for a list of chunks.
+
+        NOTE: Currently sends one request per chunk due to Metis API
+        returning inconsistent batch sizes. This is a known limitation.
+        TODO: Implement true batch embedding when switching to a provider
+        with reliable batch support (OpenAI, Cohere, Jina direct API).
+        Tracking issue: #XX
+        """
         texts = [chunk.text for chunk in chunks]
         logger.info("embedding chunks", count=len(chunks))
+        embeddings: list[list[float]] = []
 
         async with self._make_client() as client:
-            response = await client.post(
-                self._url,
-                headers=self._headers,
-                json={"model": self._model, "input": texts},
-            )
-            response.raise_for_status()
+            for i, text in enumerate(texts):
+                logger.debug("embedding chunk", index=i)
+                response = await client.post(
+                    self._url,
+                    headers=self._headers,
+                    json={"model": self._model, "input": text},
+                )
+                response.raise_for_status()
+                data = response.json()
+                embeddings.append(data["data"][0]["embedding"])
 
-        data = response.json()
-        items = sorted(data["data"], key=lambda x: x["index"])
-        return [item["embedding"] for item in items]
+        return embeddings
 
     async def embed_query(self, query: str) -> list[float]:
         async with self._make_client() as client:
