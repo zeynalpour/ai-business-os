@@ -14,7 +14,7 @@ from knowledge.chunker import Chunk
 
 logger = structlog.get_logger()
 
-EMBEDDING_DIMENSION = 768 # text-embedding-004 dimension
+EMBEDDING_DIMENSION = 3072 # gemini-embedding-001
 
 
 class Embedder:
@@ -25,7 +25,7 @@ class Embedder:
         api_key: str,
         base_url: str,  # from config
         model_family: str = "google",
-        model_name: str = "text-embedding-004",
+        model_name: str = "gemini-embedding-001",
         proxy_url: str | None = None,
     ) -> None:
         self._url = base_url

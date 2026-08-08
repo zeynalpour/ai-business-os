@@ -28,18 +28,31 @@ class Settings(BaseSettings):
 
     # ── LLM ───────────────────────────────────────────────
     llm_provider: Literal["avalai", "metis"] = Field(
-        "avalai", description="Which LLM provider to use"
+        "metis", description="Which LLM provider to use"
     )
     avalai_api_key: str = Field("", description="AvalAI API key")
     metis_api_key: str = Field("", description="Metis API key")
-    llm_model: str = Field("gemini-2.0-flash", description="Model to use")
+    llm_model: str = Field("gemini-2.5-flash-lite", description="LLM model to use")
     llm_use_flex_tier: bool = Field(True, description="50% cheaper on AvalAI")
 
     # ── Embedding ─────────────────────────────────────────
     embedding_base_url: str = Field(
         "https://api.metisai.ir/api/v1/embeddings",
-        description="Embeddings API endpoint"
+        description="Embeddings API endpoint",
     )
+    embedding_model: str = Field(
+        "gemini-embedding-001", description="Embedding model name"
+    )
+    embedding_model_family: str = Field(
+        "google", description="Embedding model family (google, openai, jina)"
+    )
+
+    # ── Knowledge ─────────────────────────────────────────
+    qdrant_url: str = Field(
+        "http://localhost:6333", description="Qdrant vector database URL"
+    )
+    knowledge_chunk_size: int = Field(500, description="Chunk size in characters")
+    knowledge_chunk_overlap: int = Field(50, description="Chunk overlap in characters")
 
     # ── Telegram ──────────────────────────────────────────
     telegram_bot_token: str = Field(..., description="Telegram bot token")
@@ -50,17 +63,9 @@ class Settings(BaseSettings):
     default_tenant_id: str = Field("default", description="Tenant id")
 
     # ── Proxy ─────────────────────────────────────────────
-    proxy_url: str | None = Field(None, description="Proxy URL for restricted networks")
-
-    # ── Knowledge ─────────────────────────────────────────
-    qdrant_url: str = Field(
-        "http://localhost:6333", description="Qdrant vector database URL"
+    proxy_url: str | None = Field(
+        None, description="Proxy URL for restricted networks"
     )
-    embedding_model: str = Field(
-        "text-embedding-004", description="Embedding model name"
-    )
-    knowledge_chunk_size: int = Field(500, description="Chunk size in characters")
-    knowledge_chunk_overlap: int = Field(50, description="Chunk overlap in characters")
 
 
 @lru_cache

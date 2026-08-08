@@ -93,7 +93,7 @@ async def main() -> None:
     embedder = Embedder(
         api_key=settings.metis_api_key,
         base_url=settings.embedding_base_url,
-        model_family="google",
+        model_family=settings.embedding_model_family,
         model_name=settings.embedding_model,
         proxy_url=settings.proxy_url,
     )
